@@ -7,11 +7,10 @@ import (
 	"math/big"
 	"testing"
 
+	"github.com/BoostyLabs/evmsignature"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	evmsignature "github.com/BoostyLabs/evm-signature"
 )
 
 func TestEvmsignature(t *testing.T) {

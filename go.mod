@@ -1,4 +1,4 @@
-module github.com/BoostyLabs/evm-signature
+module github.com/BoostyLabs/evmsignature
 
 go 1.13
 
