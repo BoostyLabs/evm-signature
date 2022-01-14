@@ -140,3 +140,19 @@ const WeiInEthereum int64 = 1000000000000000000
 func WeiToEthereum(value *big.Int) *big.Int {
 	return new(big.Int).Div(value, new(big.Int).SetInt64(WeiInEthereum))
 }
+
+// EthereumToWei converts ethereum coins to wei.
+func EthereumToWei(value float64) *big.Int {
+	bigval := new(big.Float)
+	bigval.SetFloat64(value)
+
+	coin := new(big.Float)
+	coin.SetInt(big.NewInt(WeiInEthereum))
+
+	bigval.Mul(bigval, coin)
+
+	result := new(big.Int)
+	bigval.Int(result)
+
+	return result
+}
