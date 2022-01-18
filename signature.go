@@ -13,7 +13,7 @@ import (
 	"github.com/zeebo/errs"
 )
 
-// ErrCreateSignature indicates that there was an error in the cryptoutils package.
+// ErrCreateSignature indicates that an error occurred while creating a signature.
 var ErrCreateSignature = errs.Class("create signature error")
 
 // CreateSignature entity describes values for create signature.
