@@ -8,6 +8,7 @@ import (
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/zeebo/errs"
 )
 
 // Address defines address type.
@@ -134,25 +135,25 @@ type Contract struct {
 }
 
 // WeiInEthereum indicates that one ether = 1,000,000,000,000,000,000 wei (10^18).
-const WeiInEthereum int64 = 1000000000000000000
+const WeiInEthereum = 1000000000000000000
 
-// WeiToEthereum converts wei to ethereum coins.
-func WeiToEthereum(value *big.Int) *big.Int {
+// WeiBigToEthereumBig converts wei to ethereum coins.
+func WeiBigToEthereumBig(value *big.Int) *big.Int {
 	return new(big.Int).Div(value, new(big.Int).SetInt64(WeiInEthereum))
 }
 
-// EthereumToWei converts ethereum coins to wei.
-func EthereumToWei(value float64) *big.Int {
-	bigval := new(big.Float)
-	bigval.SetFloat64(value)
+// WeiBigToEthereumFloat converts wei to ethereum coins.
+func WeiBigToEthereumFloat(value *big.Int) float64 {
+	f, _ := new(big.Float).Quo(new(big.Float).SetInt(value), new(big.Float).SetInt64(WeiInEthereum)).Float64()
+	return f
+}
 
-	coin := new(big.Float)
-	coin.SetInt(big.NewInt(WeiInEthereum))
+// EthereumFloatToWeiBig converts ethereum coins to wei.
+func EthereumFloatToWeiBig(value float64) (*big.Int, error) {
+	result, ok := new(big.Int).SetString(fmt.Sprintf("%.0f", value*WeiInEthereum), 10)
+	if !ok {
+		return result, errs.New("invalid value")
+	}
 
-	bigval.Mul(bigval, coin)
-
-	result := new(big.Int)
-	bigval.Int(result)
-
-	return result
+	return result, nil
 }
