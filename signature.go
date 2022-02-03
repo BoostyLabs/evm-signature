@@ -4,11 +4,13 @@
 package evmsignature
 
 import (
+	"context"
 	"crypto/ecdsa"
 	"encoding/hex"
 	"fmt"
 	"math/big"
 
+	"github.com/BoostyLabs/venly"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/zeebo/errs"
 )
@@ -214,6 +216,101 @@ func GenerateSignatureWithTokenIDAndValue(addressWallet Address, addressSaleCont
 	signature, err := reformSignature(signatureByte)
 
 	return signature, ErrCreateSignature.Wrap(err)
+}
+
+// VenlySignature defines the values required to create a sigturature using venly.
+type VenlySignature struct {
+	AddressNodeServer   string        `json:"addressNodeServer"`
+	ChainID             int64         `json:"chainId"`
+	GasLimit            uint64        `json:"gasLimit"`
+	WalletAddress       Address       `json:"addressWallet"`
+	AddressSaleContract Address       `json:"addressSaleContract"`
+	AddressNFTContract  Address       `json:"addressNFTContract"`
+	TokenID             int64         `json:"tokenId"`
+	Value               *big.Int      `json:"value"`
+	VenlyClient         *venly.Client `json:"venlyClient"`
+	AccessToken         string        `json:"accessToken"`
+	Pincode             string        `json:"pincode"`
+	WalletID            string        `json:"walletId"`
+	Type                string        `json:"type"`
+	SecretType          string        `json:"secretType"`
+}
+
+// GenerateVenlySignature generates signature for user's wallet with venly.
+func GenerateVenlySignature(ctx context.Context, venlySignature VenlySignature) (venly.SignaturesResponse, error) {
+	var values [][]byte
+	if !venlySignature.WalletAddress.IsValidAddress() {
+		return venly.SignaturesResponse{}, ErrCreateSignature.New("invalid address of user's wallet")
+	}
+	if !venlySignature.AddressSaleContract.IsValidAddress() {
+		return venly.SignaturesResponse{}, ErrCreateSignature.New("invalid address of sale contract")
+	}
+	if !venlySignature.AddressNFTContract.IsValidAddress() {
+		return venly.SignaturesResponse{}, ErrCreateSignature.New("invalid address of nft contract")
+	}
+
+	addressWalletByte, err := hex.DecodeString(string(venlySignature.WalletAddress)[LengthHexPrefix:])
+	if err != nil {
+		return venly.SignaturesResponse{}, ErrCreateSignature.Wrap(err)
+	}
+
+	addressSaleContractByte, err := hex.DecodeString(string(venlySignature.AddressSaleContract)[LengthHexPrefix:])
+	if err != nil {
+		return venly.SignaturesResponse{}, ErrCreateSignature.Wrap(err)
+	}
+
+	addressNFTContractByte, err := hex.DecodeString(string(venlySignature.AddressNFTContract)[LengthHexPrefix:])
+	if err != nil {
+		return venly.SignaturesResponse{}, ErrCreateSignature.Wrap(err)
+	}
+
+	tokenIDStringWithZeros := createHexStringFixedLength(new(big.Int).SetInt64(venlySignature.TokenID))
+	tokenIDByte, err := hex.DecodeString(string(tokenIDStringWithZeros))
+	if err != nil {
+		return venly.SignaturesResponse{}, ErrCreateSignature.Wrap(err)
+	}
+
+	valueStringWithZeros := createHexStringFixedLength(venlySignature.Value)
+	valueByte, err := hex.DecodeString(string(valueStringWithZeros))
+	if err != nil {
+		return venly.SignaturesResponse{}, ErrCreateSignature.Wrap(err)
+	}
+
+	values = append(values, addressWalletByte, addressSaleContractByte, addressNFTContractByte, tokenIDByte, valueByte)
+	createSignature := CreateSignature{
+		Values: values,
+	}
+
+	signaturesResponse, err := makeVenlySignature(ctx, createSignature, venlySignature)
+	if err != nil {
+		return venly.SignaturesResponse{}, ErrCreateSignature.Wrap(err)
+	}
+
+	return signaturesResponse, ErrCreateSignature.Wrap(err)
+}
+
+// makeVenlySignature makes signature from addresses, private key and token id.
+func makeVenlySignature(ctx context.Context, createSignature CreateSignature, venlySignature VenlySignature) (venly.SignaturesResponse, error) {
+	var allValues []byte
+	for _, value := range createSignature.Values {
+		allValues = append(allValues, value...)
+	}
+	dataSignature := SignHash(crypto.Keccak256Hash(allValues).Bytes())
+
+	signatureRequest := venly.SignatureRequest{
+		Type:       venlySignature.Type,
+		SecretType: venlySignature.SecretType,
+		WalletID:   venlySignature.WalletID,
+		Data:       string(dataSignature),
+	}
+
+	signaturesRequest := venly.SignaturesRequest{
+		Pincode:          venlySignature.Pincode,
+		SignatureRequest: signatureRequest,
+	}
+
+	signaturesResponse, err := venlySignature.VenlyClient.Signatures(ctx, venlySignature.AccessToken, signaturesRequest)
+	return signaturesResponse, ErrCreateSignature.Wrap(err)
 }
 
 // makeSignatureWithToken makes signature from addresses, private key and token id.
