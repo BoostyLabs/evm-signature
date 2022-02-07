@@ -50,18 +50,6 @@ func TestEvmsignature(t *testing.T) {
 	var value4 = new(big.Int)
 	value4.SetString("100000000000000000", 10)
 
-	data5 := map[string]string{
-		"contractMethodAddress": "0x095ea7b3",
-		"to":                    "0xfeA3995326f0C08d9a385C5AD344b87A384B5d3A",
-		"from":                  "0x4604F4045bb2b2d998dEd660081eb6ebC19C9f1e",
-		"domainSeperator":       "0x2739d6640de1503427ab7c5bd20094483387d4f8de3af1aeb1cfbf826f1b5b30",
-		"privateKey":            "5aefce0a2d473f59578fa7dee6a122d6509af1e0f79fcbee700dfcfeddabe4cc",
-		"signature":             "89e91e4dccae549130688ee82f2f8ee9a365412929e7922751dde082dc9d0fa849051302294e8f3b2583f00acfb8f0a91eee3c5d42dffb512b81968b8e7258e01b",
-	}
-	var value5 = new(big.Int)
-	value5.SetString("1000000000", 10)
-	var nonce5 int64 = 0
-
 	t.Run("GenerateSignature", func(t *testing.T) {
 		privateKeyECDSA, err := crypto.HexToECDSA(data1["privateKey"])
 		require.NoError(t, err)
@@ -118,22 +106,5 @@ func TestEvmsignature(t *testing.T) {
 		)
 		require.NoError(t, err)
 		assert.Equal(t, signature, evmsignature.Signature(data4["signature"]))
-	})
-
-	t.Run("GenerateSignatureForApproveERC20", func(t *testing.T) {
-		privateKeyECDSA, err := crypto.HexToECDSA(data5["privateKey"])
-		require.NoError(t, err)
-
-		signature, err := evmsignature.GenerateSignatureForApproveERC20(
-			evmsignature.Hex(data5["contractMethodAddress"]),
-			evmsignature.Address(data5["to"]),
-			value5,
-			nonce5,
-			evmsignature.Address(data5["from"]),
-			evmsignature.Hex(data5["domainSeperator"]),
-			privateKeyECDSA,
-		)
-		require.NoError(t, err)
-		assert.Equal(t, signature, evmsignature.Signature(data5["signature"]))
 	})
 }
