@@ -311,6 +311,60 @@ func GenerateVenlySignatureForApproveERC20(ctx context.Context, venlySignature V
 	return signaturesResponse, ErrCreateSignature.Wrap(err)
 }
 
+// GenerateSignatureForApproveERC20 generates signature for user's wallet for approve ERC20.
+func GenerateSignatureForApproveERC20(contractMethodAddress Hex, to Address, value *big.Int, nonce int64, from Address, domainSeperator Hex, privateKey *ecdsa.PrivateKey) (Signature, error) {
+	if !to.IsValidAddress() {
+		return "", ErrCreateSignature.New("invalid address of user's wallet")
+	}
+	if !from.IsValidAddress() {
+		return "", ErrCreateSignature.New("invalid address of erc20 contract")
+	}
+
+	toStringWithZeros := createHexStringFixedLength(string(to[LengthHexPrefix:]))
+	valueMoneyStringWithZeros := createHexStringFixedLength(fmt.Sprintf("%x", value))
+	data := contractMethodAddress + toStringWithZeros + valueMoneyStringWithZeros
+	dataByte, err := hex.DecodeString(string(data[LengthHexPrefix:]))
+	if err != nil {
+		return "", ErrCreateSignature.Wrap(err)
+	}
+
+	functionSignatureBytes := crypto.Keccak256Hash(dataByte)
+
+	var metaTransaction []byte
+	metaTransactionFucnDescriptionBytes := crypto.Keccak256([]byte(MetaTransactionFucnDescription))
+	metaTransaction = append(metaTransaction, metaTransactionFucnDescriptionBytes...)
+
+	nonceStringWithZeros := createHexStringFixedLength(fmt.Sprintf("%x", nonce))
+	nonceByte, err := hex.DecodeString(string(nonceStringWithZeros))
+	if err != nil {
+		return "", ErrCreateSignature.Wrap(err)
+	}
+	metaTransaction = append(metaTransaction, nonceByte...)
+
+	fromStringWithZeros := createHexStringFixedLength(string(from[LengthHexPrefix:]))
+	fromByte, err := hex.DecodeString(string(fromStringWithZeros))
+	if err != nil {
+		return "", ErrCreateSignature.Wrap(err)
+	}
+	metaTransaction = append(metaTransaction, fromByte...)
+	metaTransaction = append(metaTransaction, functionSignatureBytes.Bytes()...)
+
+	domainSeperatorStringWithZeros := createHexStringFixedLength(string(domainSeperator[LengthHexPrefix:]))
+	domainSeperatorByte, err := hex.DecodeString(string(domainSeperatorStringWithZeros))
+	if err != nil {
+		return "", ErrCreateSignature.Wrap(err)
+	}
+
+	metaTransactionBytes := crypto.Keccak256Hash(metaTransaction)
+
+	dataSignature := crypto.Keccak256Hash([]byte(EthereumSignedMessageForApprove), domainSeperatorByte, metaTransactionBytes.Bytes())
+
+	signatureByte, err := crypto.Sign(dataSignature.Bytes(), privateKey)
+	signature, err := reformSignature(signatureByte)
+
+	return signature, ErrCreateSignature.Wrap(err)
+}
+
 // makeSignatureWithToken makes signature from addresses, private key and token id.
 func makeSignature(createSignature CreateSignature) ([]byte, error) {
 	var allValues []byte
