@@ -83,6 +83,8 @@ type ChainID int
 const (
 	// ChainIDRinkeby indicates that chain id is 4.
 	ChainIDRinkeby ChainID = 4
+	// ChainIDMatic indicates that chain id is 137.
+	ChainIDMatic ChainID = 137
 )
 
 // Length defines the list of possible lengths of blockchain elements.

@@ -52,15 +52,15 @@ func TestEvmsignature(t *testing.T) {
 
 	data5 := map[string]string{
 		"contractMethodAddress": "0x095ea7b3",
-		"to":                    "0xfeA3995326f0C08d9a385C5AD344b87A384B5d3A",
-		"from":                  "0x4604F4045bb2b2d998dEd660081eb6ebC19C9f1e",
+		"to":                    "0x238f30A8CCF64b502fBA2e0C1b90Ac3c07e3B0a6", // contract
+		"from":                  "0x56f088767D91badc379155290c4205c7b917a36E", // user
 		"domainSeperator":       "0x2739d6640de1503427ab7c5bd20094483387d4f8de3af1aeb1cfbf826f1b5b30",
-		"privateKey":            "5aefce0a2d473f59578fa7dee6a122d6509af1e0f79fcbee700dfcfeddabe4cc",
-		"signature":             "89e91e4dccae549130688ee82f2f8ee9a365412929e7922751dde082dc9d0fa849051302294e8f3b2583f00acfb8f0a91eee3c5d42dffb512b81968b8e7258e01b",
+		"privateKey":            "3b2c3b9eec999beb061fd5b9fc60ae7995e9a81504e4f1c0e852ffc532cd0649",
+		"signature":             "ff638d8a00cd4327d547d4405b29d0da9b180296852dbd199330f7c88524229077ea3bdf7366a91407a87cc8c854dd3694900fd1f65bc375306bbb7005d261de1b",
 	}
 	var value5 = new(big.Int)
-	value5.SetString("1000000000", 10)
-	var nonce5 int64 = 0
+	value5.SetString("10000000000", 10)
+	var nonce5 int64 = 1
 
 	t.Run("GenerateSignature", func(t *testing.T) {
 		privateKeyECDSA, err := crypto.HexToECDSA(data1["privateKey"])
@@ -136,5 +136,4 @@ func TestEvmsignature(t *testing.T) {
 		require.NoError(t, err)
 		assert.Equal(t, signature, evmsignature.Signature(data5["signature"]))
 	})
-
 }
