@@ -100,7 +100,7 @@ func GenerateSignatureWithValue(addressWallet Address, addressContract Address, 
 		return "", ErrCreateSignature.Wrap(err)
 	}
 
-	valueStringWithZeros := createHexStringFixedLength(fmt.Sprintf("%x", value))
+	valueStringWithZeros := CreateHexStringFixedLength(fmt.Sprintf("%x", value))
 	valueByte, err := hex.DecodeString(string(valueStringWithZeros))
 	if err != nil {
 		return "", ErrCreateSignature.Wrap(err)
@@ -142,13 +142,13 @@ func GenerateSignatureWithValueAndNonce(addressWallet Address, addressContract A
 		return "", ErrCreateSignature.Wrap(err)
 	}
 
-	valueStringWithZeros := createHexStringFixedLength(fmt.Sprintf("%x", value))
+	valueStringWithZeros := CreateHexStringFixedLength(fmt.Sprintf("%x", value))
 	valueByte, err := hex.DecodeString(string(valueStringWithZeros))
 	if err != nil {
 		return "", ErrCreateSignature.Wrap(err)
 	}
 
-	nonceStringWithZeros := createHexStringFixedLength(fmt.Sprintf("%x", nonce))
+	nonceStringWithZeros := CreateHexStringFixedLength(fmt.Sprintf("%x", nonce))
 	nonceByte, err := hex.DecodeString(string(nonceStringWithZeros))
 	if err != nil {
 		return "", ErrCreateSignature.Wrap(err)
@@ -198,13 +198,13 @@ func GenerateSignatureWithTokenIDAndValue(addressWallet Address, addressSaleCont
 		return "", ErrCreateSignature.Wrap(err)
 	}
 
-	tokenIDStringWithZeros := createHexStringFixedLength(fmt.Sprintf("%x", tokenID))
+	tokenIDStringWithZeros := CreateHexStringFixedLength(fmt.Sprintf("%x", tokenID))
 	tokenIDByte, err := hex.DecodeString(string(tokenIDStringWithZeros))
 	if err != nil {
 		return "", ErrCreateSignature.Wrap(err)
 	}
 
-	valueStringWithZeros := createHexStringFixedLength(fmt.Sprintf("%x", value))
+	valueStringWithZeros := CreateHexStringFixedLength(fmt.Sprintf("%x", value))
 	valueByte, err := hex.DecodeString(string(valueStringWithZeros))
 	if err != nil {
 		return "", ErrCreateSignature.Wrap(err)
@@ -279,8 +279,8 @@ func GenerateVenlySignatureForApproveERC20(ctx context.Context, venlySignature V
 		return venly.SignaturesResponse{}, ErrCreateSignature.New("invalid address of user's wallet")
 	}
 
-	toStringWithZeros := createHexStringFixedLength(string(venlySignature.To[LengthHexPrefix:]))
-	valueMoneyStringWithZeros := createHexStringFixedLength(fmt.Sprintf("%x", venlySignature.Value))
+	toStringWithZeros := CreateHexStringFixedLength(string(venlySignature.To[LengthHexPrefix:]))
+	valueMoneyStringWithZeros := CreateHexStringFixedLength(fmt.Sprintf("%x", venlySignature.Value))
 	data := venlySignature.ContractMethodAddress + toStringWithZeros + valueMoneyStringWithZeros
 
 	signerData := TypedData{
@@ -302,7 +302,7 @@ func GenerateVenlySignatureForApproveERC20(ctx context.Context, venlySignature V
 			Name:              string(WrappedEtherName),
 			Version:           DomainVersion,
 			VerifyingContract: string(WrappedEtherAddress),
-			Salt:              "0x" + string(createHexStringFixedLength(fmt.Sprintf("%x", ChainIDMatic))),
+			Salt:              "0x" + string(CreateHexStringFixedLength(fmt.Sprintf("%x", ChainIDMatic))),
 		},
 		Message: apitypes.TypedDataMessage{
 			"nonce":             venlySignature.Nonce,
@@ -336,8 +336,8 @@ func GenerateSignatureForApproveERC20(contractMethodAddress Hex, to Address, val
 		return "", ErrCreateSignature.New("invalid address of erc20 contract")
 	}
 
-	toStringWithZeros := createHexStringFixedLength(string(to[LengthHexPrefix:]))
-	valueMoneyStringWithZeros := createHexStringFixedLength(fmt.Sprintf("%x", value))
+	toStringWithZeros := CreateHexStringFixedLength(string(to[LengthHexPrefix:]))
+	valueMoneyStringWithZeros := CreateHexStringFixedLength(fmt.Sprintf("%x", value))
 	data := contractMethodAddress + toStringWithZeros + valueMoneyStringWithZeros
 	dataByte, err := hex.DecodeString(string(data[LengthHexPrefix:]))
 	if err != nil {
@@ -350,14 +350,14 @@ func GenerateSignatureForApproveERC20(contractMethodAddress Hex, to Address, val
 	metaTransactionFucnDescriptionBytes := crypto.Keccak256([]byte(MetaTransactionFucnDescription))
 	metaTransaction = append(metaTransaction, metaTransactionFucnDescriptionBytes...)
 
-	nonceStringWithZeros := createHexStringFixedLength(fmt.Sprintf("%x", nonce))
+	nonceStringWithZeros := CreateHexStringFixedLength(fmt.Sprintf("%x", nonce))
 	nonceByte, err := hex.DecodeString(string(nonceStringWithZeros))
 	if err != nil {
 		return "", ErrCreateSignature.Wrap(err)
 	}
 	metaTransaction = append(metaTransaction, nonceByte...)
 
-	fromStringWithZeros := createHexStringFixedLength(string(from[LengthHexPrefix:]))
+	fromStringWithZeros := CreateHexStringFixedLength(string(from[LengthHexPrefix:]))
 	fromByte, err := hex.DecodeString(string(fromStringWithZeros))
 	if err != nil {
 		return "", ErrCreateSignature.Wrap(err)
@@ -366,7 +366,7 @@ func GenerateSignatureForApproveERC20(contractMethodAddress Hex, to Address, val
 	metaTransaction = append(metaTransaction, functionSignatureBytes.Bytes()...)
 	metaTransactionBytes := crypto.Keccak256Hash(metaTransaction)
 
-	domainSeperatorStringWithZeros := createHexStringFixedLength(string(domainSeperator[LengthHexPrefix:]))
+	domainSeperatorStringWithZeros := CreateHexStringFixedLength(string(domainSeperator[LengthHexPrefix:]))
 	domainSeperatorByte, err := hex.DecodeString(string(domainSeperatorStringWithZeros))
 	if err != nil {
 		return "", ErrCreateSignature.Wrap(err)

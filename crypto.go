@@ -115,12 +115,12 @@ type Data struct {
 
 // NewDataHex is a constructor for data entity, but returns hex string.
 func NewDataHex(data Data) Hex {
-	tokenID := createHexStringFixedLength(fmt.Sprintf("%x", data.TokenID))
+	tokenID := CreateHexStringFixedLength(fmt.Sprintf("%x", data.TokenID))
 	return data.AddressContractMethod + tokenID
 }
 
-// createHexStringFixedLength creates srings with fixed length and number in hex formate in the end.
-func createHexStringFixedLength(valueString string) Hex {
+// CreateHexStringFixedLength creates srings with fixed length and number in hex formate in the end.
+func CreateHexStringFixedLength(valueString string) Hex {
 	var zeroString string
 	for i := 0; i < (int(LengthOneBlockInputValue) - len(valueString)); i++ {
 		zeroString += "0"
