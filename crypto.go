@@ -95,6 +95,8 @@ const (
 	LengthPrivateKey Length = 64
 	// LengthOneBlockInputValue defines the length of one block of input data.
 	LengthOneBlockInputValue Length = 64
+	// LengthTwoBlockInputSignature defines the length of two block of input signature.
+	LengthTwoBlockInputSignature Length = 130
 	// LengthAddress defines the length of address.
 	LengthAddress Length = 40
 	// LengthHexPrefix defines the length of hex prefix.
