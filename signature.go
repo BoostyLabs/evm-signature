@@ -279,7 +279,7 @@ func GenerateVenlySignatureForApproveERC20(ctx context.Context, venlySignature V
 		return venly.SignaturesResponse{}, ErrCreateSignature.New("invalid address of user's wallet")
 	}
 
-	toStringWithZeros := CreateHexStringFixedLength(string(venlySignature.To[LengthHexPrefix:]))
+	toStringWithZeros := CreateHexStringFixedLength(venlySignature.To.Hex()[LengthHexPrefix:])
 	valueMoneyStringWithZeros := CreateHexStringFixedLength(fmt.Sprintf("%x", venlySignature.Value))
 	data := venlySignature.ContractMethodAddress + toStringWithZeros + valueMoneyStringWithZeros
 
