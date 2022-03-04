@@ -11,6 +11,9 @@ import (
 	"github.com/zeebo/errs"
 )
 
+// ErrInvalidAddress indicates that invalid address error.
+var ErrInvalidAddress = errs.Class("invalid address error")
+
 // Address defines address type.
 type Address string
 
@@ -20,8 +23,11 @@ func CreateValidAddress(address Hex) Address {
 }
 
 // IsValidAddress checks if the address is valid.
-func (address Address) IsValidAddress() bool {
-	return common.IsHexAddress(string(address))
+func (address Address) IsValidAddress() error {
+	if !common.IsHexAddress(string(address)) {
+		return ErrInvalidAddress.New("")
+	}
+	return nil
 }
 
 // Hex defines hex type.

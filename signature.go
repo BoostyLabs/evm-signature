@@ -47,11 +47,11 @@ func SignHash(data []byte) []byte {
 // GenerateSignature generates signature for user's wallet.
 func GenerateSignature(addressWallet Address, addressContract Address, privateKey *ecdsa.PrivateKey) (Signature, error) {
 	var values [][]byte
-	if !addressWallet.IsValidAddress() {
-		return "", ErrCreateSignature.New("invalid address of user's wallet")
+	if err := addressWallet.IsValidAddress(); err != nil {
+		return "", ErrCreateSignature.Wrap(err)
 	}
-	if !addressContract.IsValidAddress() {
-		return "", ErrCreateSignature.New("invalid address of contract")
+	if err := addressContract.IsValidAddress(); err != nil {
+		return "", ErrCreateSignature.Wrap(err)
 	}
 
 	addressWalletByte, err := hex.DecodeString(string(addressWallet)[LengthHexPrefix:])
@@ -83,11 +83,11 @@ func GenerateSignature(addressWallet Address, addressContract Address, privateKe
 // GenerateSignatureWithValue generates signature for user's wallet with value.
 func GenerateSignatureWithValue(addressWallet Address, addressContract Address, value int64, privateKey *ecdsa.PrivateKey) (Signature, error) {
 	var values [][]byte
-	if !addressWallet.IsValidAddress() {
-		return "", ErrCreateSignature.New("invalid address of user's wallet")
+	if err := addressWallet.IsValidAddress(); err != nil {
+		return "", ErrCreateSignature.Wrap(err)
 	}
-	if !addressContract.IsValidAddress() {
-		return "", ErrCreateSignature.New("invalid address of contract")
+	if err := addressContract.IsValidAddress(); err != nil {
+		return "", ErrCreateSignature.Wrap(err)
 	}
 
 	addressWalletByte, err := hex.DecodeString(string(addressWallet)[LengthHexPrefix:])
@@ -125,11 +125,11 @@ func GenerateSignatureWithValue(addressWallet Address, addressContract Address, 
 // GenerateSignatureWithValueAndNonce generates signature for user's wallet with value and nonce.
 func GenerateSignatureWithValueAndNonce(addressWallet Address, addressContract Address, value *big.Int, nonce int64, privateKey *ecdsa.PrivateKey) (Signature, error) {
 	var values [][]byte
-	if !addressWallet.IsValidAddress() {
-		return "", ErrCreateSignature.New("invalid address of user's wallet")
+	if err := addressWallet.IsValidAddress(); err != nil {
+		return "", ErrCreateSignature.Wrap(err)
 	}
-	if !addressContract.IsValidAddress() {
-		return "", ErrCreateSignature.New("invalid address of contract")
+	if err := addressContract.IsValidAddress(); err != nil {
+		return "", ErrCreateSignature.Wrap(err)
 	}
 
 	addressWalletByte, err := hex.DecodeString(string(addressWallet)[LengthHexPrefix:])
@@ -173,14 +173,14 @@ func GenerateSignatureWithValueAndNonce(addressWallet Address, addressContract A
 // GenerateSignatureWithTokenIDAndValue generates signature for user's wallet with tokenID and value.
 func GenerateSignatureWithTokenIDAndValue(addressWallet Address, addressSaleContract Address, addressNFTContract Address, tokenID int64, value *big.Int, privateKey *ecdsa.PrivateKey) (Signature, error) {
 	var values [][]byte
-	if !addressWallet.IsValidAddress() {
-		return "", ErrCreateSignature.New("invalid address of user's wallet")
+	if err := addressWallet.IsValidAddress(); err != nil {
+		return "", ErrCreateSignature.Wrap(err)
 	}
-	if !addressSaleContract.IsValidAddress() {
-		return "", ErrCreateSignature.New("invalid address of sale contract")
+	if err := addressSaleContract.IsValidAddress(); err != nil {
+		return "", ErrCreateSignature.Wrap(err)
 	}
-	if !addressNFTContract.IsValidAddress() {
-		return "", ErrCreateSignature.New("invalid address of nft contract")
+	if err := addressNFTContract.IsValidAddress(); err != nil {
+		return "", ErrCreateSignature.Wrap(err)
 	}
 
 	addressWalletByte, err := hex.DecodeString(string(addressWallet)[LengthHexPrefix:])
@@ -329,11 +329,11 @@ func GenerateVenlySignatureForApproveERC20(ctx context.Context, venlySignature V
 
 // GenerateSignatureForApproveERC20 generates signature for user's wallet for approve ERC20.
 func GenerateSignatureForApproveERC20(contractMethodAddress Hex, to Address, value *big.Int, nonce int64, from Address, domainSeperator Hex, privateKey *ecdsa.PrivateKey) (Signature, error) {
-	if !to.IsValidAddress() {
-		return "", ErrCreateSignature.New("invalid address of user's wallet")
+	if err := to.IsValidAddress(); err != nil {
+		return "", ErrCreateSignature.Wrap(err)
 	}
-	if !from.IsValidAddress() {
-		return "", ErrCreateSignature.New("invalid address of erc20 contract")
+	if err := from.IsValidAddress(); err != nil {
+		return "", ErrCreateSignature.Wrap(err)
 	}
 
 	toStringWithZeros := CreateHexStringFixedLength(string(to[LengthHexPrefix:]))
