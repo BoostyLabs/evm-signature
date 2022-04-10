@@ -35,6 +35,8 @@ github.com/BoostyLabs/venly v0.0.0-20220202170347-eb131f6a27c5 h1:8ezFoEwnsHy1EL
 github.com/BoostyLabs/venly v0.0.0-20220202170347-eb131f6a27c5/go.mod h1:Wo+wsTXcbBJLKnUxuUUw2t4F4GqbpZj3srDPhgdxSAM=
 github.com/BoostyLabs/venly v0.0.0-20220214174621-f996098bffec h1:HLD+2+zy3yjWbr1aoteeThNj9C0l2CR42pom3lZDCWw=
 github.com/BoostyLabs/venly v0.0.0-20220214174621-f996098bffec/go.mod h1:Wo+wsTXcbBJLKnUxuUUw2t4F4GqbpZj3srDPhgdxSAM=
+github.com/BoostyLabs/venly v0.0.0-20220410161459-0a9b893c3f1f h1:s8+iSkRMWUyuB7CAKBCeEfW6bvR6AU5jY9chX00Hfoo=
+github.com/BoostyLabs/venly v0.0.0-20220410161459-0a9b893c3f1f/go.mod h1:Wo+wsTXcbBJLKnUxuUUw2t4F4GqbpZj3srDPhgdxSAM=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/DATA-DOG/go-sqlmock v1.3.3/go.mod h1:f/Ixk793poVmq4qj/V1dPUg2JEAKC73Q5eFN3EC/SaM=

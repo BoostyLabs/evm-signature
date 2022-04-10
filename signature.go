@@ -237,7 +237,7 @@ type VenlySignature struct {
 	SecretType            string         `json:"secretType"`
 	WalletID              string         `json:"walletId"`
 	Pincode               string         `json:"pincode"`
-	VenlyClient           *venly.Client  `json:"venlyClient"`
+	VenlyClient           venly.Venly    `json:"venlyClient"`
 	AccessToken           string         `json:"accessToken"`
 }
 
