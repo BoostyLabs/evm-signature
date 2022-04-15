@@ -19,9 +19,8 @@ var ErrDeployContract = errs.Class("deploy contract error")
 
 // ContractConfig describes values required to deploy contact.
 type ContractConfig struct {
-	AddressNodeServer string   `json:"addressNodeServer"`
-	PrivateKey        string   `json:"privateKey"`
-	ChainID           *big.Int `json:"chainID"`
+	AddressNodeServer string `json:"addressNodeServer"`
+	PrivateKey        string `json:"privateKey"`
 }
 
 // DeployNFTContract deploys nft contract for each collection nfts.
@@ -36,7 +35,12 @@ func DeployNFTContract(ctx context.Context, config ContractConfig, deployContrac
 		return common.Address{}, ErrDeployContract.Wrap(err)
 	}
 
-	auth, err := bind.NewKeyedTransactorWithChainID(privateKeyECDSA, config.ChainID)
+	chainID, err := client.ChainID(ctx)
+	if err != nil {
+		return common.Address{}, ErrDeployContract.Wrap(err)
+	}
+
+	auth, err := bind.NewKeyedTransactorWithChainID(privateKeyECDSA, chainID)
 	if err != nil {
 		return common.Address{}, ErrDeployContract.Wrap(err)
 	}
