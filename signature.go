@@ -226,6 +226,12 @@ func GenerateSignatureWithTokenIDAndValue(addressWallet Address, addressSaleCont
 	return signature, ErrCreateSignature.Wrap(err)
 }
 
+// Wallet exposes access to wallet methods.
+type Wallet interface {
+	// Signatures calls signatures Venly api endpoint.
+	Signatures(ctx context.Context, accessToken string, r venly.SignaturesRequest) (venly.SignaturesResponse, error)
+}
+
 // VenlySignature defines the values required to create a sigturature using venly.
 type VenlySignature struct {
 	To                    common.Address `json:"to"`
@@ -237,7 +243,7 @@ type VenlySignature struct {
 	SecretType            string         `json:"secretType"`
 	WalletID              string         `json:"walletId"`
 	Pincode               string         `json:"pincode"`
-	VenlyClient           venly.Venly    `json:"venlyClient"`
+	WalletClient          Wallet         `json:"walletClient"`
 	AccessToken           string         `json:"accessToken"`
 }
 
@@ -323,7 +329,7 @@ func GenerateVenlySignatureForApproveERC20(ctx context.Context, venlySignature V
 		SignatureRequest: signatureRequest,
 	}
 
-	signaturesResponse, err := venlySignature.VenlyClient.Signatures(ctx, venlySignature.AccessToken, signaturesRequest)
+	signaturesResponse, err := venlySignature.WalletClient.Signatures(ctx, venlySignature.AccessToken, signaturesRequest)
 	return signaturesResponse, ErrCreateSignature.Wrap(err)
 }
 
