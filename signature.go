@@ -70,12 +70,12 @@ func GenerateSignature(addressWallet Address, addressContract Address, privateKe
 		PrivateKey: privateKey,
 	}
 
-	signatureByte, err := makeSignature(createSignature)
+	signatureByte, err := MakeSignature(createSignature)
 	if err != nil {
 		return "", ErrCreateSignature.Wrap(err)
 	}
 
-	signature, err := reformSignature(signatureByte)
+	signature, err := ReformSignature(signatureByte)
 
 	return signature, ErrCreateSignature.Wrap(err)
 }
@@ -112,12 +112,12 @@ func GenerateSignatureWithValue(addressWallet Address, addressContract Address, 
 		PrivateKey: privateKey,
 	}
 
-	signatureByte, err := makeSignature(createSignature)
+	signatureByte, err := MakeSignature(createSignature)
 	if err != nil {
 		return "", ErrCreateSignature.Wrap(err)
 	}
 
-	signature, err := reformSignature(signatureByte)
+	signature, err := ReformSignature(signatureByte)
 
 	return signature, ErrCreateSignature.Wrap(err)
 }
@@ -160,12 +160,12 @@ func GenerateSignatureWithValueAndNonce(addressWallet Address, addressContract A
 		PrivateKey: privateKey,
 	}
 
-	signatureByte, err := makeSignature(createSignature)
+	signatureByte, err := MakeSignature(createSignature)
 	if err != nil {
 		return "", ErrCreateSignature.Wrap(err)
 	}
 
-	signature, err := reformSignature(signatureByte)
+	signature, err := ReformSignature(signatureByte)
 
 	return signature, ErrCreateSignature.Wrap(err)
 }
@@ -216,12 +216,12 @@ func GenerateSignatureWithTokenIDAndValue(addressWallet Address, addressSaleCont
 		PrivateKey: privateKey,
 	}
 
-	signatureByte, err := makeSignature(createSignature)
+	signatureByte, err := MakeSignature(createSignature)
 	if err != nil {
 		return "", ErrCreateSignature.Wrap(err)
 	}
 
-	signature, err := reformSignature(signatureByte)
+	signature, err := ReformSignature(signatureByte)
 
 	return signature, ErrCreateSignature.Wrap(err)
 }
@@ -379,13 +379,13 @@ func GenerateSignatureForApproveERC20(contractMethodAddress Hex, to Address, val
 		return "", ErrCreateSignature.Wrap(err)
 	}
 
-	signature, err := reformSignature(signatureByte)
+	signature, err := ReformSignature(signatureByte)
 
 	return signature, ErrCreateSignature.Wrap(err)
 }
 
-// makeSignatureWithToken makes signature from addresses, private key and token id.
-func makeSignature(createSignature CreateSignature) ([]byte, error) {
+// MakeSignature makes signature.
+func MakeSignature(createSignature CreateSignature) ([]byte, error) {
 	var allValues []byte
 	for _, value := range createSignature.Values {
 		allValues = append(allValues, value...)
@@ -395,8 +395,8 @@ func makeSignature(createSignature CreateSignature) ([]byte, error) {
 	return signature, ErrCreateSignature.Wrap(err)
 }
 
-// reformSignature reforms last two byte of signature from 00, 01 to 1b, 1c.
-func reformSignature(signatureByte []byte) (Signature, error) {
+// ReformSignature reforms last two byte of signature from 00, 01 to 1b, 1c.
+func ReformSignature(signatureByte []byte) (Signature, error) {
 	signatureWithoutEnd := string(signatureByte)[:len(signatureByte)-1]
 	signatureString := hex.EncodeToString(signatureByte)
 	signatureLastSymbol := signatureString[len(signatureString)-1:]
